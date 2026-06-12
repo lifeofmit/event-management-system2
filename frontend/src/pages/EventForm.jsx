@@ -1,0 +1,149 @@
+import React, { useState, useEffect } from 'react';
+import { Box, Button, TextField, Typography, Grid, MenuItem, Paper } from '@mui/material';
+import API from '../services/api';
+import { useNavigate } from 'react-router-dom';
+
+const EventForm = () => {
+  const navigate = useNavigate();
+  const [eventTypes, setEventTypes] = useState([]);
+  const [formData, setFormData] = useState({
+    eventName: '',
+    eventDate: '',
+    eventType: '',
+    objective: '',
+    description: '',
+    latitude: '',
+    longitude: '',
+  });
+  
+  const [files, setFiles] = useState({
+    geoLocationPhotos: [],
+    eventPhotos: [],
+    eventReport: null
+  });
+
+  useEffect(() => {
+    // Fetch Event Types for dropdown from Super Admin configuration
+    API.getEventTypes().then(res => setEventTypes(res.data)).catch(console.error);
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files: selectedFiles } = e.target;
+    if (name === 'eventReport') {
+      setFiles({ ...files, [name]: selectedFiles[0] });
+    } else {
+      setFiles({ ...files, [name]: Array.from(selectedFiles) });
+    }
+  };
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setFormData({
+          ...formData,
+          latitude: position.coords.latitude.toString(),
+          longitude: position.coords.longitude.toString()
+        });
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
+    
+    // Append Text Data
+    Object.keys(formData).forEach(key => data.append(key, formData[key]));
+    
+    // Append Files
+    files.geoLocationPhotos.forEach(file => data.append('geoLocationPhotos', file));
+    files.eventPhotos.forEach(file => data.append('eventPhotos', file));
+    if (files.eventReport) data.append('eventReport', files.eventReport);
+
+    try {
+      await API.createEvent(data);
+      alert('Event Submitted Successfully!');
+      navigate('/events');
+    } catch (error) {
+      console.error(error);
+      alert('Failed to submit event.');
+    }
+  };
+
+  return (
+    <Paper sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+      <Typography variant="h5" gutterBottom>Submit New Event</Typography>
+      <Box component="form" onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField required fullWidth label="Event Name" name="eventName" onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField required fullWidth type="date" label="Event Date" name="eventDate" InputLabelProps={{ shrink: true }} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField select required fullWidth label="Event Type" name="eventType" value={formData.eventType} onChange={handleChange}>
+              {eventTypes.map((option) => (
+                <MenuItem key={option._id} value={option._id}>{option.name}</MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField required fullWidth multiline rows={2} label="Objective" name="objective" onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField fullWidth multiline rows={4} label="Description" name="description" onChange={handleChange} />
+          </Grid>
+
+          {/* Geolocation Section */}
+          <Grid item xs={12} sm={4}>
+            <TextField fullWidth label="Latitude" name="latitude" value={formData.latitude} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField fullWidth label="Longitude" name="longitude" value={formData.longitude} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12} sm={4} display="flex" alignItems="center">
+            <Button variant="outlined" onClick={getLocation} fullWidth>Auto Detect Location</Button>
+          </Grid>
+
+          {/* File Uploads */}
+          <Grid item xs={12} sm={4}>
+            <Button variant="contained" component="label" fullWidth>
+              Geo Photos
+              <input type="file" hidden multiple name="geoLocationPhotos" accept="image/jpeg, image/png" onChange={handleFileChange} />
+            </Button>
+            <Typography variant="caption">{files.geoLocationPhotos.length} files selected</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Button variant="contained" component="label" fullWidth>
+              Event Photos
+              <input type="file" hidden multiple name="eventPhotos" accept="image/jpeg, image/png" onChange={handleFileChange} />
+            </Button>
+            <Typography variant="caption">{files.eventPhotos.length} files selected</Typography>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Button variant="contained" color="secondary" component="label" fullWidth>
+              Event Report (.doc/x)
+              <input type="file" hidden name="eventReport" accept=".doc, .docx" onChange={handleFileChange} />
+            </Button>
+            <Typography variant="caption">{files.eventReport ? files.eventReport.name : 'No file selected'}</Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
+              Submit Event
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+    </Paper>
+  );
+};
+
+export default EventForm;
