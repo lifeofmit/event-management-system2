@@ -8,8 +8,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import EventForm from './pages/EventForm';
 
-const Dashboard = () => <h2>Dashboard Placeholder (View Analytics Here)</h2>;
-const EventList = () => <h2>Event List Placeholder (Table Here)</h2>;
+import Dashboard from './pages/Dashboard';
+import EventList from './pages/EventList';
+import UserManagement from './pages/UserManagement';
+
+// const Dashboard = () => <h2>Dashboard Placeholder (View Analytics Here)</h2>;
+// const EventList = () => <h2>Event List Placeholder (Table Here)</h2>;
 const Unauthorized = () => <h2>403 - Unauthorized Access</h2>;
 
 function App() {
@@ -25,6 +29,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/events" element={<EventList />} />
             <Route path="/add-event" element={<EventForm />} />
+            <Route path="/users" element={<UserManagement />} />
           </Route>
         </Route>
 
