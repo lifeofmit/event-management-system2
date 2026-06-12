@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import {
   AppBar, Box, CssBaseline, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, Button
 } from '@mui/material';
-import { Menu, Dashboard, Event, AddBox, ExitToApp, Group } from '@mui/icons-material';
+import { Menu, Dashboard, Event, AddBox, ExitToApp, Group, Category } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -20,6 +20,7 @@ const Layout = () => {
     { text: 'Events', icon: <Event />, path: '/events', roles: ['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'] },
     { text: 'Add Event', icon: <AddBox />, path: '/add-event', roles: ['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'] },
     { text: 'User Management', icon: <Group />, path: '/users', roles: ['SUPER_ADMIN'] },
+    { text: 'Event Categories', icon: <Category />, path: '/event-types', roles: ['SUPER_ADMIN'] },
   ];
 
   const drawer = (

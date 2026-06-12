@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import EventTypeManagement from './pages/EventTypeManagement';
 
 // Pages
 import Login from './pages/Login';
@@ -36,7 +37,8 @@ function App() {
         {/* Super Admin Only Route Example */}
         <Route element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']} />}>
           <Route element={<Layout />}>
-            <Route path="/users" element={<h2>User Management Placeholder</h2>} />
+            <Route path="/users" element={<UserManagement />} />
+            <Route path="/event-types" element={<EventTypeManagement />} />
           </Route>
         </Route>
       </Routes>

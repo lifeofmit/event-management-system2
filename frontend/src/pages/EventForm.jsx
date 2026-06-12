@@ -24,7 +24,7 @@ const EventForm = () => {
 
   useEffect(() => {
     // Fetch Event Types for dropdown from Super Admin configuration
-    API.getEventTypes().then(res => setEventTypes(res.data)).catch(console.error);
+    API.getActiveEventTypes().then(res => setEventTypes(res.data)).catch(console.error);
   }, []);
 
   const handleChange = (e) => {
@@ -81,53 +81,53 @@ const EventForm = () => {
       <Typography variant="h5" gutterBottom>Submit New Event</Typography>
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12, md:4}}>
             <TextField required fullWidth label="Event Name" name="eventName" onChange={handleChange} />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item size={{xs:12, md:4}}>
             <TextField required fullWidth type="date" label="Event Date" name="eventDate" InputLabelProps={{ shrink: true }} onChange={handleChange} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item size={{xs:12, md:4}}>
             <TextField select required fullWidth label="Event Type" name="eventType" value={formData.eventType} onChange={handleChange}>
               {eventTypes.map((option) => (
                 <MenuItem key={option._id} value={option._id}>{option.name}</MenuItem>
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item size={{xs:12, md:12}}>
             <TextField required fullWidth multiline rows={2} label="Objective" name="objective" onChange={handleChange} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item size={{xs:12, md:12}}>
             <TextField fullWidth multiline rows={4} label="Description" name="description" onChange={handleChange} />
           </Grid>
 
           {/* Geolocation Section */}
-          <Grid item xs={12} sm={4}>
+          <Grid item size={{xs:12, md:4}}>
             <TextField fullWidth label="Latitude" name="latitude" value={formData.latitude} onChange={handleChange} />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item size={{xs:12, md:4}}>
             <TextField fullWidth label="Longitude" name="longitude" value={formData.longitude} onChange={handleChange} />
           </Grid>
-          <Grid item xs={12} sm={4} display="flex" alignItems="center">
+          <Grid item size={{xs:12, md:4}} display="flex" alignItems="center">
             <Button variant="outlined" onClick={getLocation} fullWidth>Auto Detect Location</Button>
           </Grid>
 
           {/* File Uploads */}
-          <Grid item xs={12} sm={4}>
+          <Grid item size={{xs:12, md:4}}>
             <Button variant="contained" component="label" fullWidth>
               Geo Photos
               <input type="file" hidden multiple name="geoLocationPhotos" accept="image/jpeg, image/png" onChange={handleFileChange} />
             </Button>
             <Typography variant="caption">{files.geoLocationPhotos.length} files selected</Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item size={{xs:12, md:4}}>
             <Button variant="contained" component="label" fullWidth>
               Event Photos
               <input type="file" hidden multiple name="eventPhotos" accept="image/jpeg, image/png" onChange={handleFileChange} />
             </Button>
             <Typography variant="caption">{files.eventPhotos.length} files selected</Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item size={{xs:12, md:4}}>
             <Button variant="contained" color="secondary" component="label" fullWidth>
               Event Report (.doc/x)
               <input type="file" hidden name="eventReport" accept=".doc, .docx" onChange={handleFileChange} />
@@ -135,7 +135,7 @@ const EventForm = () => {
             <Typography variant="caption">{files.eventReport ? files.eventReport.name : 'No file selected'}</Typography>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item size={{xs:12, md:12}}>
             <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
               Submit Event
             </Button>

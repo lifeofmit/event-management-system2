@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const logAudit = require('../utils/auditLogger');
 
 // Get all users (Super Admin only)
 const getUsers = async (req, res) => {
@@ -31,6 +32,7 @@ const createUser = async (req, res) => {
       password: hashedPassword,
       role
     });
+    await logAudit(req, 'USER_CREATION', `Created user: ${newUser.email} with role ${newUser.role}`);
 
     res.status(201).json({ message: 'User created successfully', user: newUser });
   } catch (error) {

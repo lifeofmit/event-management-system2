@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const logAudit = require('../utils/auditLogger');
 
 const createEvent = async (req, res) => {
   try {
@@ -34,6 +35,7 @@ const createEvent = async (req, res) => {
     });
 
     await newEvent.save();
+    await logAudit(req, 'EVENT_CREATION', `Created event: ${newEvent.eventName}`);
     res.status(201).json({ message: 'Event created successfully', event: newEvent });
   } catch (error) {
     console.error(error);
@@ -43,11 +45,26 @@ const createEvent = async (req, res) => {
 
 const getEvents = async (req, res) => {
   try {
-    // RBAC Filtering Logic
+    const { search, startDate, endDate, eventType } = req.query;
     let filter = {};
+
+    // 1. RBAC Filtering (Base Security)
     if (req.user.role === 'COORDINATOR') filter.coordinatorId = req.user._id;
     if (req.user.role === 'DEAN') filter.deanId = req.user._id;
-    // SUPER_ADMIN and ADMIN see all (no filter applied)
+
+    // 2. User-Applied Filters
+    if (search) {
+      // Case-insensitive regex search on the event name
+      filter.eventName = { $regex: search, $options: 'i' };
+    }
+    if (eventType) {
+      filter.eventType = eventType;
+    }
+    if (startDate || endDate) {
+      filter.eventDate = {};
+      if (startDate) filter.eventDate.$gte = new Date(startDate);
+      if (endDate) filter.eventDate.$lte = new Date(endDate);
+    }
 
     const events = await Event.find(filter)
       .populate('eventType', 'name')
