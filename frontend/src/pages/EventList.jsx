@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { Download, Search, Clear, UploadFile } from '@mui/icons-material';
 import { AuthContext } from '../context/AuthContext';
-import API from '../services/api';
+import API, { BASE_URL } from '../services/api';
 
 const EventList = () => {
     const { user } = useContext(AuthContext);
@@ -90,7 +90,7 @@ const EventList = () => {
     };
 
     const handleDownloadReport = (fileUrl) => {
-        window.open(`http://localhost:5000${fileUrl}`, '_blank');
+        window.open(`${BASE_URL}${fileUrl}`, '_blank');
     };
 
     // NEW: Handlers for the View Button
@@ -323,10 +323,10 @@ const EventList = () => {
                                     {selectedEvent.geoLocationPhotos.map((photo, index) => (
                                         <Box key={index} sx={{ textAlign: 'center' }}>
                                         {/* Clicking the image opens the full resolution version in a new tab */}
-                                        <a href={`http://localhost:5000${photo.fileUrl}`} target="_blank" rel="noreferrer">
+                                        <a href={`${BASE_URL}${photo.fileUrl}`} target="_blank" rel="noreferrer">
                                             <Box 
                                             component="img" 
-                                            src={`http://localhost:5000${photo.fileUrl}`} 
+                                            src={`${BASE_URL}${photo.fileUrl}`} 
                                             alt={`Geo ${index + 1}`}
                                             sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, border: '1px solid #ddd', '&:hover': { opacity: 0.8 } }}
                                             />
@@ -346,10 +346,10 @@ const EventList = () => {
                                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                     {selectedEvent.eventPhotos.map((photo, index) => (
                                         <Box key={index} sx={{ textAlign: 'center' }}>
-                                        <a href={`http://localhost:5000${photo.fileUrl}`} target="_blank" rel="noreferrer">
+                                        <a href={`${BASE_URL}${photo.fileUrl}`} target="_blank" rel="noreferrer">
                                             <Box 
                                             component="img" 
-                                            src={`http://localhost:5000${photo.fileUrl}`} 
+                                            src={`${BASE_URL}${photo.fileUrl}`} 
                                             alt={`Event ${index + 1}`}
                                             sx={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 1, border: '1px solid #ddd', '&:hover': { opacity: 0.8 } }}
                                             />
