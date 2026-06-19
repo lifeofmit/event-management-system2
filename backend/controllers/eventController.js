@@ -78,4 +78,44 @@ const getEvents = async (req, res) => {
   }
 };
 
-module.exports = { createEvent, getEvents };
+// Add this function below your existing getEvents function
+const uploadReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log('Report upload request for event ID:', id);
+    
+    // Find the event
+    const event = await Event.findById(id);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    // Ensure only the assigned Coordinator or Super Admin can upload the report
+    if (req.user.role === 'COORDINATOR' && event.coordinatorId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You can only upload reports for your own events' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Please upload a file' });
+    }
+
+    // Update the event record
+    event.eventReport = {
+      fileName: req.file.filename,
+      fileUrl: `/uploads/reports/${req.file.filename}`,
+      uploadedAt: Date.now()
+    };
+
+    await event.save();
+
+    // Log the action (since we built Audit Logs in the last step!)
+    const logAudit = require('../utils/auditLogger');
+    await logAudit(req, 'REPORT_UPLOAD', `Uploaded report for event: ${event.eventName}`);
+
+    res.json({ message: 'Report uploaded successfully', eventReport: event.eventReport });
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ message: 'Failed to upload report' });
+  }
+};
+
+// Don't forget to export it!
+module.exports = { createEvent, getEvents, uploadReport };

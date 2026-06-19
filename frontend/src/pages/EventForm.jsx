@@ -84,8 +84,28 @@ const EventForm = () => {
           <Grid item size={{xs:12, md:4}}>
             <TextField required fullWidth label="Event Name" name="eventName" onChange={handleChange} />
           </Grid>
+          {/* <Grid item size={{xs:12, md:4}}>
+            <TextField required fullWidth type="date" label="Event Date" name="eventDate" InputLabelProps={{ shrink: true }} onChange={handleChange}  />
+          </Grid> */}
           <Grid item size={{xs:12, md:4}}>
-            <TextField required fullWidth type="date" label="Event Date" name="eventDate" InputLabelProps={{ shrink: true }} onChange={handleChange} />
+            <TextField 
+              required 
+              fullWidth 
+              type="date" 
+              label="Event Date" 
+              name="eventDate" 
+              InputLabelProps={{ shrink: true }} 
+              value={formData.eventDate} 
+              onChange={handleChange} 
+              sx={{
+                "& input::-webkit-datetime-edit": {
+                  color: formData.eventDate ? "inherit" : "transparent"
+                },
+                "& input:focus::-webkit-datetime-edit": {
+                  color: "inherit"
+                }
+              }}
+            />
           </Grid>
           <Grid item size={{xs:12, md:4}}>
             <TextField select required fullWidth label="Event Type" name="eventType" value={formData.eventType} onChange={handleChange}>

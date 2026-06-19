@@ -16,7 +16,7 @@ const Layout = () => {
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   const menuItems = [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/', roles: ['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'] },
+    // { text: 'Dashboard', icon: <Dashboard />, path: '/', roles: ['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'] },
     { text: 'Events', icon: <Event />, path: '/events', roles: ['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'] },
     { text: 'Add Event', icon: <AddBox />, path: '/add-event', roles: ['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'] },
     { text: 'User Management', icon: <Group />, path: '/users', roles: ['SUPER_ADMIN'] },
@@ -51,10 +51,22 @@ const Layout = () => {
           <IconButton color="inherit" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: 'none' } }}>
             <Menu />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <Box 
+              component="img" 
+              src="/su-logo-wht.png" 
+              alt="Sigma University Logo" 
+              sx={{ 
+                height: 30, 
+                objectFit: 'contain',
+                my: 0.1
+              }} 
+            />
+          </Box>
+          {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {user?.role.replace('_', ' ')} Portal
-          </Typography>
-          <Typography variant="body1" sx={{ mr: 2 }}>{user?.name}</Typography>
+          </Typography> */}
+          <Typography variant="body1" sx={{ mr: 2 }}>{user?.role.replace('_', ' ')} ({user?.name})</Typography>
           <Button color="inherit" onClick={logout} startIcon={<ExitToApp />}>Logout</Button>
         </Toolbar>
       </AppBar>

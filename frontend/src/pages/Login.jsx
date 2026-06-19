@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate('/');
+      navigate('/events');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
@@ -24,6 +24,19 @@ const Login = () => {
     <Container component="main" maxWidth="xs">
       <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
+          {/* NEW: Branding Emblem Logo Header Block */}
+          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <Box 
+              component="img" 
+              src="/emblem-su.png" 
+              alt="University Emblem" 
+              sx={{ 
+                height: 90, 
+                objectFit: 'contain',
+                maxHeight: { xs: 75, sm: 90 } 
+              }} 
+            />
+          </Box>
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             System Login
           </Typography>
