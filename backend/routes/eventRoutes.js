@@ -9,10 +9,11 @@ router.get('/', protect, getEvents);
 
 router.post('/', 
   protect, 
-  authorize('SUPER_ADMIN', 'COORDINATOR'), 
+  // FIXED: All four roles are now explicitly authorized to create events
+  authorize('SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'), 
   upload.fields([
-    { name: 'geoLocationPhotos', maxCount: 5 },
-    { name: 'eventPhotos', maxCount: 10 },
+    { name: 'geoLocationPhotos', maxCount: 30 },
+    { name: 'eventPhotos', maxCount: 30 },
     { name: 'eventReport', maxCount: 1 }
   ]), 
   createEvent
@@ -21,7 +22,7 @@ router.post('/',
 // CRITICAL FIX: Ensure this is spelled exactly like this and registered correctly
 router.post('/:id/report', 
   protect, 
-  authorize('SUPER_ADMIN', 'COORDINATOR'), 
+  authorize('SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR'), 
   upload.single('eventReport'), 
   uploadReport
 );

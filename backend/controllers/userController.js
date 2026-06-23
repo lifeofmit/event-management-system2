@@ -92,19 +92,20 @@ const updateUser = async (req, res) => {
       user.email = email;
     }
 
-    // 2. Update Role & Dean assignments dynamically
+    // 2. Update Role & Supervisor assignments dynamically
     if (role) {
       user.role = role;
-      // If role is changed away from Coordinator, wipe out any residual assigned deans
-      if (role !== 'COORDINATOR') {
-        user.assignedDean = null;
-      }
+      if (role !== 'COORDINATOR') user.assignedDean = null;
+      if (role !== 'DEAN') user.assignedAdmin = null;
     }
 
-    // Handle Dean Assignment/Reassignment directly inside the edit pipeline
-    if (user.role === 'COORDINATOR') {
-      // If explicit dean value is provided, update it. If explicitly empty string, clear it.
-      user.assignedDean = assignedDean === '' ? null : assignedDean;
+    // Handle Assignments dynamically inside the edit pipeline
+    const supervisorId = req.body.assignedSupervisor; // We will pass a generic ID from the frontend
+    
+    if (user.role === 'COORDINATOR' && supervisorId !== undefined) {
+      user.assignedDean = supervisorId === '' ? null : supervisorId;
+    } else if (user.role === 'DEAN' && supervisorId !== undefined) {
+      user.assignedAdmin = supervisorId === '' ? null : supervisorId;
     }
 
     // 3. Handle Password update securely

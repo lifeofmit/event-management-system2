@@ -15,8 +15,12 @@ const eventSchema = new mongoose.Schema({
     fileUrl: String,
     uploadedAt: Date
   },
-  coordinatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  deanId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  // FIXED: Added Admin tracking and removed "required: true" 
+  // so any role can create an event without throwing database validation errors
+  coordinatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  deanId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 

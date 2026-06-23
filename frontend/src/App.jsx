@@ -9,7 +9,7 @@ import EventTypeManagement from './pages/EventTypeManagement';
 import Login from './pages/Login';
 import EventForm from './pages/EventForm';
 
-import Dashboard from './pages/Dashboard';
+// import Dashboard from './pages/Dashboard';
 import EventList from './pages/EventList';
 import UserManagement from './pages/UserManagement';
 
@@ -27,7 +27,8 @@ function App() {
         {/* Protected Routes wrapped in Layout */}
         <Route element={<ProtectedRoute allowedRoles={['SUPER_ADMIN', 'ADMIN', 'DEAN', 'COORDINATOR']} />}>
           <Route element={<Layout />}>
-            <Route path="/" element={<Dashboard />} />
+            {/* <Route path="/" element={<Dashboard />} /> */}
+            <Route path="/" element={<EventList />} />
             <Route path="/events" element={<EventList />} />
             <Route path="/add-event" element={<EventForm />} />
             <Route path="/users" element={<UserManagement />} />

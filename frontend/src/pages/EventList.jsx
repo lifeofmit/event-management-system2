@@ -215,7 +215,7 @@ const EventList = () => {
                             <TableCell><strong>Event Name</strong></TableCell>
                             <TableCell><strong>Date</strong></TableCell>
                             <TableCell><strong>Type</strong></TableCell>
-                            <TableCell><strong>Coordinator</strong></TableCell>
+                            <TableCell><strong>Creator</strong></TableCell>
                             <TableCell><strong>Report Status</strong></TableCell>
                             <TableCell align="center"><strong>Actions</strong></TableCell>
                         </TableRow>
@@ -251,23 +251,24 @@ const EventList = () => {
                                         
                                         {event.eventReport ? (
                                             <Button 
-                                            size="small" 
-                                            variant="contained" 
-                                            color="secondary" 
-                                            onClick={() => handleDownloadReport(event.eventReport.fileUrl)}
-                                            >
-                                            Report
-                                            </Button>
-                                        ) : (
-                                            user?.role === 'COORDINATOR' && (
-                                            <Button 
                                                 size="small" 
                                                 variant="contained" 
-                                                color="primary" 
-                                                onClick={() => handleOpenUpload(event._id)}
+                                                color="secondary" 
+                                                onClick={() => handleDownloadReport(event.eventReport.fileUrl)}
                                             >
-                                                Upload Report
+                                                Report
                                             </Button>
+                                        ) : (
+                                            /* FIXED: Now explicitly checks if the logged-in user's ID matches the event's creator ID */
+                                            user?.id === (event.createdBy?._id || event.createdBy) && (
+                                                <Button 
+                                                    size="small" 
+                                                    variant="contained" 
+                                                    color="primary" 
+                                                    onClick={() => handleOpenUpload(event._id)}
+                                                >
+                                                    Upload Report
+                                                </Button>
                                             )
                                         )}
                                     </TableCell>

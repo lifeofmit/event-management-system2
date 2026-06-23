@@ -19,7 +19,7 @@ const UserManagement = () => {
 
   // Form Fields State management
   const [createForm, setCreateForm] = useState({ name: '', email: '', password: '', role: 'COORDINATOR' });
-  const [editForm, setEditForm] = useState({ id: '', name: '', email: '', password: '', role: '', assignedDean: '' });
+  const [editForm, setEditForm] = useState({ id: '', name: '', email: '', password: '', role: '', assignedSupervisor: '' });
   const [selfForm, setSelfForm] = useState({ name: currentUser?.name || '', email: currentUser?.email || '', password: '' });
 
   const fetchUsers = async () => {
@@ -37,7 +37,10 @@ const UserManagement = () => {
 
   // Filter lists out for mapping selection values
   const deanList = users.filter(u => u.role === 'DEAN');
+  const adminList = users.filter(u => u.role === 'ADMIN');
   const systemRoles = ['ADMIN', 'DEAN', 'COORDINATOR'];
+
+  
 
   // Handle addition of a new user account
   const handleCreateSubmit = async (e) => {
@@ -54,13 +57,13 @@ const UserManagement = () => {
 
   // Pre-populate fields when editing a user
   const handleOpenEditDialog = (targetUser) => {
+    let supervisor = '';
+    if (targetUser.role === 'COORDINATOR') supervisor = targetUser.assignedDean?._id || '';
+    if (targetUser.role === 'DEAN') supervisor = targetUser.assignedAdmin?._id || '';
+
     setEditForm({
-      id: targetUser._id,
-      name: targetUser.name,
-      email: targetUser.email,
-      role: targetUser.role,
-      assignedDean: targetUser.assignedDean?._id || '',
-      password: '' // Leave blank initially by default security guidelines
+      id: targetUser._id, name: targetUser.name, email: targetUser.email, 
+      role: targetUser.role, assignedSupervisor: supervisor, password: '' 
     });
     setOpenEdit(true);
   };
@@ -125,7 +128,7 @@ const UserManagement = () => {
               <TableCell><strong>Name</strong></TableCell>
               <TableCell><strong>Email</strong></TableCell>
               <TableCell><strong>System Role</strong></TableCell>
-              <TableCell><strong>Assigned Dean Scope</strong></TableCell>
+              <TableCell><strong>Assigned Supervisor</strong></TableCell>
               <TableCell align="right"><strong>Management Control Actions</strong></TableCell>
             </TableRow>
           </TableHead>
@@ -144,7 +147,11 @@ const UserManagement = () => {
                       color={u.role === 'ADMIN' ? 'error' : u.role === 'DEAN' ? 'secondary' : 'primary'} 
                     />
                   </TableCell>
-                  <TableCell>{u.assignedDean?.name || <Typography variant="caption" color="textSecondary">None Assigned</Typography>}</TableCell>
+                  <TableCell>
+                    {u.role === 'COORDINATOR' && (u.assignedDean?.name || <Typography variant="caption" color="textSecondary">No Dean Assigned</Typography>)}
+                    {u.role === 'DEAN' && (u.assignedAdmin?.name || <Typography variant="caption" color="textSecondary">No Admin Assigned</Typography>)}
+                    {['SUPER_ADMIN', 'ADMIN'].includes(u.role) && <Typography variant="caption" color="textSecondary">Top Level Authority</Typography>}
+                  </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Edit Profile Configs & Access Rules">
                       <IconButton color="primary" onClick={() => handleOpenEditDialog(u)}>
@@ -204,7 +211,7 @@ const UserManagement = () => {
               </Grid>
 
               {/* DYNAMIC COMPONENT: Shows Dean assignment input row instantly if user role context equates to Coordinator */}
-              {editForm.role === 'COORDINATOR' && (
+              {/* {editForm.role === 'COORDINATOR' && (
                 <Grid item  size={{xs:12, md:6}}>
                   <TextField 
                     select fullWidth label="Assign/Reassign Overseeing Dean" 
@@ -213,6 +220,33 @@ const UserManagement = () => {
                   >
                     <MenuItem value=""><em>None (Clear Assigned Dean Context)</em></MenuItem>
                     {deanList.map(dean => <MenuItem key={dean._id} value={dean._id}>{dean.name}</MenuItem>)}
+                  </TextField>
+                </Grid>
+              )} */}
+
+              {/* DYNAMIC COMPONENT: Shows correct assignment dropdown based on role */}
+              {editForm.role === 'COORDINATOR' && (
+                <Grid item size={{xs:12, md:6}}>
+                  <TextField 
+                    select fullWidth label="Assign Overseeing Dean" 
+                    value={editForm.assignedSupervisor} 
+                    onChange={(e) => setEditForm({...editForm, assignedSupervisor: e.target.value})}
+                  >
+                    <MenuItem value=""><em>None (Clear Assignment)</em></MenuItem>
+                    {deanList.map(dean => <MenuItem key={dean._id} value={dean._id}>{dean.name}</MenuItem>)}
+                  </TextField>
+                </Grid>
+              )}
+
+              {editForm.role === 'DEAN' && (
+                <Grid item size={{xs:12, md:6}}>
+                  <TextField 
+                    select fullWidth label="Assign Overseeing Admin" 
+                    value={editForm.assignedSupervisor} 
+                    onChange={(e) => setEditForm({...editForm, assignedSupervisor: e.target.value})}
+                  >
+                    <MenuItem value=""><em>None (Clear Assignment)</em></MenuItem>
+                    {adminList.map(admin => <MenuItem key={admin._id} value={admin._id}>{admin.name}</MenuItem>)}
                   </TextField>
                 </Grid>
               )}
@@ -226,8 +260,8 @@ const UserManagement = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenEdit(false)}>Cancel Registration</Button>
-            <Button type="submit" variant="contained" color="primary">Save Synchronization Updates</Button>
+            <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
+            <Button type="submit" variant="contained" color="primary">Save</Button>
           </DialogActions>
         </Box>
       </Dialog>

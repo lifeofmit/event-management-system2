@@ -5,23 +5,33 @@ const createEvent = async (req, res) => {
   try {
     const { eventName, eventDate, eventType, objective, description, latitude, longitude } = req.body;
 
-    // Process uploaded files mapped by Multer
     const formatFiles = (fileArray, folder) => {
       if (!fileArray) return [];
-      return fileArray.map(file => ({
-        fileName: file.filename,
-        fileUrl: `/uploads/${folder}/${file.filename}`
-      }));
+      return fileArray.map(file => ({ fileName: file.filename, fileUrl: `/uploads/${folder}/${file.filename}` }));
     };
 
+    // Dynamic Hierarchy Mapping based on who is creating the event
+    let coordinatorId = null;
+    let deanId = null;
+    let adminId = null;
+
+    if (req.user.role === 'COORDINATOR') {
+      coordinatorId = req.user._id;
+      deanId = req.user.assignedDean;
+      // Fetch the dean to find their assigned Admin
+      if (deanId) {
+        const dean = await User.findById(deanId);
+        adminId = dean?.assignedAdmin || null;
+      }
+    } else if (req.user.role === 'DEAN') {
+      deanId = req.user._id;
+      adminId = req.user.assignedAdmin;
+    } else if (req.user.role === 'ADMIN') {
+      adminId = req.user._id;
+    }
+
     const newEvent = new Event({
-      eventName,
-      eventDate,
-      eventType,
-      objective,
-      description,
-      latitude,
-      longitude,
+      eventName, eventDate, eventType, objective, description, latitude, longitude,
       geoLocationPhotos: formatFiles(req.files['geoLocationPhotos'], 'images'),
       eventPhotos: formatFiles(req.files['eventPhotos'], 'images'),
       eventReport: req.files['eventReport'] ? {
@@ -29,8 +39,7 @@ const createEvent = async (req, res) => {
         fileUrl: `/uploads/reports/${req.files['eventReport'][0].filename}`,
         uploadedAt: Date.now()
       } : null,
-      coordinatorId: req.user._id, // Assign to logged-in coordinator
-      deanId: req.user.assignedDean || req.user._id, // Fallback for testing
+      coordinatorId, deanId, adminId,
       createdBy: req.user._id
     });
 
@@ -38,7 +47,6 @@ const createEvent = async (req, res) => {
     await logAudit(req, 'EVENT_CREATION', `Created event: ${newEvent.eventName}`);
     res.status(201).json({ message: 'Event created successfully', event: newEvent });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: 'Failed to create event', error: error.message });
   }
 };
@@ -48,18 +56,14 @@ const getEvents = async (req, res) => {
     const { search, startDate, endDate, eventType } = req.query;
     let filter = {};
 
-    // 1. RBAC Filtering (Base Security)
+    // 1. RBAC Hierarchy Filtering 
     if (req.user.role === 'COORDINATOR') filter.coordinatorId = req.user._id;
     if (req.user.role === 'DEAN') filter.deanId = req.user._id;
+    if (req.user.role === 'ADMIN') filter.adminId = req.user._id;
+    // SUPER_ADMIN sees all
 
-    // 2. User-Applied Filters
-    if (search) {
-      // Case-insensitive regex search on the event name
-      filter.eventName = { $regex: search, $options: 'i' };
-    }
-    if (eventType) {
-      filter.eventType = eventType;
-    }
+    if (search) filter.eventName = { $regex: search, $options: 'i' };
+    if (eventType) filter.eventType = eventType;
     if (startDate || endDate) {
       filter.eventDate = {};
       if (startDate) filter.eventDate.$gte = new Date(startDate);
@@ -88,9 +92,9 @@ const uploadReport = async (req, res) => {
     const event = await Event.findById(id);
     if (!event) return res.status(404).json({ message: 'Event not found' });
 
-    // Ensure only the assigned Coordinator or Super Admin can upload the report
-    if (req.user.role === 'COORDINATOR' && event.coordinatorId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'You can only upload reports for your own events' });
+    // FIXED: Strict check - only the exact user who created it can upload the report, regardless of role.
+    if (event.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You can only upload reports for events you created' });
     }
 
     if (!req.file) {
