@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/emblem-su.png" />
+    <title>Super Admin Documentation | Event Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #eff6ff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1.6;
+            display: flex;
+        }
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-link {
+            display: block;
+            text-decoration: none;
+            color: var(--text-light);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+        }
+        .header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        /* Section Cards */
+        .section-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .section-card h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-list {
+            padding-left: 1.5rem;
+        }
+        .step-list li {
+            margin-bottom: 1rem;
+        }
+        .step-list strong {
+            color: var(--text-dark);
+        }
+        .highlight {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
+            .main-content { margin-left: 0; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2><i class="fa-solid fa-shield-halved"></i> Super Admin Guide</h2>
+        <a href="#overview" class="nav-link active"><i class="fa-solid fa-house"></i> Overview</a>
+        <a href="#user-management" class="nav-link"><i class="fa-solid fa-users-gear"></i> User Management</a>
+        <a href="#hierarchy" class="nav-link"><i class="fa-solid fa-sitemap"></i> Hierarchy & Mapping</a>
+        <a href="#categories" class="nav-link"><i class="fa-solid fa-tags"></i> Event Categories</a>
+        <a href="#export" class="nav-link"><i class="fa-solid fa-file-export"></i> Data & Exports</a>
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>System Documentation</h1>
+            <p>Comprehensive guide to system configuration, user management, and hierarchical controls.</p>
+        </header>
+
+        <div id="overview" class="section-card">
+            <h3><i class="fa-solid fa-eye"></i> 1. Understanding Your Role</h3>
+            <p>As the <strong>Super Admin</strong>, you hold the highest level of access in the system. Your primary responsibility is configuring the system for other users.</p>
+            <p>While you can view, add, and export all events, your day-to-day focus should be maintaining the structural hierarchy (Assigning Deans to Admins, and Coordinators to Deans) and managing event categories.</p>
+        </div>
+
+        <div id="user-management" class="section-card">
+            <h3><i class="fa-solid fa-user-plus"></i> 2. User Management</h3>
+            <p>You have full control over all system accounts.</p>
+            <ul class="step-list">
+                <li><strong>Creating Users:</strong> Navigate to the <span class="highlight">User Management</span> tab, click "Add New User", fill in the details, and assign their specific role.</li>
+                <li><strong>Editing Credentials:</strong> Click the blue edit (pencil) icon next to any user to change their Name, Email, or Role.</li>
+                <li><strong>Resetting Passwords:</strong> In the edit menu, type a new password in the override box and save. Leave it blank to keep their current password intact.</li>
+                <li><strong>Your Own Profile:</strong> Use the blue banner at the top of the User Directory to change your own Super Admin name, email, or password.</li>
+            </ul>
+        </div>
+
+        <div id="hierarchy" class="section-card">
+            <h3><i class="fa-solid fa-sitemap"></i> 3. Hierarchy & Mapping</h3>
+            <p>The system relies on a strict reporting structure to dictate who can see which events: <strong>Admin → Dean → Coordinator</strong>.</p>
+            <ul class="step-list">
+                <li><strong>Assigning a Dean to an Admin:</strong> Edit a Dean's profile. A dropdown will appear allowing you to select which Admin they report to.</li>
+                <li><strong>Assigning a Coordinator to a Dean:</strong> Edit a Coordinator's profile. A dropdown will appear allowing you to select which Dean they report to.</li>
+                <li><strong>Clearing Assignments:</strong> Select <em>"None (Clear Assignment)"</em> from the dropdown to remove a user from the hierarchy.</li>
+            </ul>
+        </div>
+
+        <div id="categories" class="section-card">
+            <h3><i class="fa-solid fa-list-check"></i> 4. Event Categories Management</h3>
+            <p>You control the master list of Event Types (e.g., Workshop, Seminar, Cultural) that appear in the Add Event form dropdown.</p>
+            <ul class="step-list">
+                <li><strong>Adding Categories:</strong> Go to <span class="highlight">Event Categories</span> and click Add. It will immediately be available to all users.</li>
+                <li><strong>Disabling Categories:</strong> Toggle the green switch to 'off'. The category won't be deleted from past events, but users will no longer be able to select it for new events.</li>
+            </ul>
+        </div>
+
+        <div id="export" class="section-card">
+            <h3><i class="fa-solid fa-cloud-arrow-down"></i> 5. Data & Exports</h3>
+            <p>You have unrestricted global access to all events in the system.</p>
+            <ul class="step-list">
+                <li><strong>Filtering:</strong> Use the Search bar at the top of the Event Directory to narrow down results by Date Range, Name, or Category.</li>
+                <li><strong>Exporting:</strong> Click the <span class="highlight">CSV</span>, <span class="highlight">EXCEL</span>, or <span class="highlight">PDF</span> buttons. The exported report will strictly respect the filters you currently have applied on the screen.</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // Simple script for smooth scrolling and active link highlighting
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

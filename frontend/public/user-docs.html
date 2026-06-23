@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/emblem-su.png" />
+    <title>User Documentation | Event Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-light: #f0fdfa;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1.6;
+            display: flex;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            height: 100vh;
+            position: fixed;
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-link {
+            display: block;
+            text-decoration: none;
+            color: var(--text-light);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .main-content {
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+        }
+        .header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        .alert {
+            background-color: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            color: #0369a1;
+        }
+        .section-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .section-card h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-list {
+            padding-left: 1.5rem;
+        }
+        .step-list li {
+            margin-bottom: 1rem;
+        }
+        .step-list strong {
+            color: var(--text-dark);
+        }
+        .highlight {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
+            .main-content { margin-left: 0; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2><i class="fa-solid fa-book-open"></i> User Guide</h2>
+        <a href="#adding-events" class="nav-link active"><i class="fa-solid fa-calendar-plus"></i> Adding Events</a>
+        <a href="#reports" class="nav-link"><i class="fa-solid fa-file-arrow-up"></i> Uploading Reports</a>
+        <a href="#visibility" class="nav-link"><i class="fa-solid fa-eye"></i> Visibility Rules</a>
+        <a href="#export" class="nav-link"><i class="fa-solid fa-download"></i> Data Export (Admins)</a>
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>System Documentation Guide</h1>
+            <p>Learn how to submit events, upload reports, and manage your assigned directory.</p>
+        </header>
+
+        <div class="alert">
+            <i class="fa-solid fa-circle-info"></i> <strong>Note:</strong> The features you see in the system depend on your assigned role (Admin, Dean, or Coordinator).
+        </div>
+
+        <div id="adding-events" class="section-card">
+            <h3><i class="fa-solid fa-calendar-plus"></i> 1. How to Add a New Event</h3>
+            <p>All system users have the ability to submit events. Navigate to the <span class="highlight">Add Event</span> tab on your sidebar.</p>
+            <ul class="step-list">
+                <li><strong>Mandatory Fields:</strong> Event Name, Category, Date, and Objective are required. <em>You cannot select a date in the future.</em></li>
+                <li><strong>Required Photos:</strong> You must upload at least 1 Geo-Location Photo and 1 Event Photo. You can upload up to 30 photos per section simultaneously.</li>
+                <li><strong>Location Detection:</strong> Click the 'Auto Detect Location' button to automatically fill your Latitude and Longitude coordinates based on your device's GPS.</li>
+            </ul>
+        </div>
+
+        <div id="reports" class="section-card">
+            <h3><i class="fa-solid fa-file-arrow-up"></i> 2. Uploading the Final Report</h3>
+            <p>You do not need to have the final report document ready when you initially create the event.</p>
+            <ul class="step-list">
+                <li><strong>Locating the Event:</strong> Once the event is finished and your report is written, go to the <span class="highlight">Event Directory</span>.</li>
+                <li><strong>Uploading:</strong> Find the event you created, and click the blue <strong>Upload Report</strong> button in the Actions column.</li>
+                <li><strong>Formats:</strong> You can only upload files in <code>.doc</code> or <code>.docx</code> format.</li>
+                <li><strong>Completion:</strong> Once successfully uploaded, the button will change to a purple 'Report' button, allowing anyone with access to download it.</li>
+            </ul>
+            <p style="color: #dc2626; font-size: 0.9em; margin-top: 1rem;">* <strong>Security Rule:</strong> You will only see the 'Upload Report' button on events that YOU explicitly created.</p>
+        </div>
+
+        <div id="visibility" class="section-card">
+            <h3><i class="fa-solid fa-eye"></i> 3. Directory Visibility Rules</h3>
+            <p>The events you are allowed to view in your Event Directory depend heavily on your system role:</p>
+            <ul class="step-list">
+                <li><strong>Coordinators:</strong> You will ONLY see events that you have personally created.</li>
+                <li><strong>Deans:</strong> You will see events created by yourself, AND events created by any Coordinator assigned to report to you.</li>
+                <li><strong>Admins:</strong> You will see events created by yourself, events from your assigned Deans, and events from the Coordinators reporting to those Deans.</li>
+            </ul>
+        </div>
+
+        <div id="export" class="section-card">
+            <h3><i class="fa-solid fa-download"></i> 4. Data Exporting (Admin Only)</h3>
+            <p>If you hold the <strong>Admin</strong> role, you have the authority to export data from the system.</p>
+            <ul class="step-list">
+                <li><strong>Generating Reports:</strong> At the top right of your Event Directory, you will see buttons for <span class="highlight">CSV</span>, <span class="highlight">EXCEL</span>, and <span class="highlight">PDF</span>.</li>
+                <li><strong>Targeted Exports:</strong> Applying filters (like searching for a specific date range or category) before clicking export will ensure your downloaded file <em>only</em> contains the filtered data currently shown on your screen.</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

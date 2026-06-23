@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const BASE_URL = 'http://localhost:5000';
-// export const BASE_URL = 'https://events.sigmauni.com';
+// export const BASE_URL = 'http://localhost:5000';
+export const BASE_URL = 'https://events.sigmauni.com';
 
 const API_URL = `${BASE_URL}/api`;
 

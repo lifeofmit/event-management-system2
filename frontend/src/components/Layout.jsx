@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import {
-  AppBar, Box, CssBaseline, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, Button
+  AppBar, Box, CssBaseline, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, Button, Divider
 } from '@mui/material';
-import { Menu, Dashboard, Event, AddBox, ExitToApp, Group, Category } from '@mui/icons-material';
+import { Menu, Dashboard, Event, AddBox, ExitToApp, Group, Category, Help } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -39,6 +39,32 @@ const Layout = () => {
               </ListItemButton>
             </ListItem>
           ))}
+      </List>
+      <Divider />
+      {/* Guide File Links */}
+      <List>
+        {user?.role === 'SUPER_ADMIN' && (
+          <ListItem disablePadding>
+            {/* Acts as a standard <a href="..."> tag */}
+            <ListItemButton component="a" href="/super-admin-docs.html" target="_blank">
+              <ListItemIcon>
+                <Help />
+              </ListItemIcon>
+              <ListItemText primary="Super Admin Guide" />
+            </ListItemButton>
+          </ListItem>
+        )}
+
+        {['ADMIN', 'DEAN', 'COORDINATOR'].includes(user?.role) && (
+          <ListItem disablePadding>
+            <ListItemButton component="a" href="/user-docs.html" target="_blank">
+              <ListItemIcon>
+                <Help />
+              </ListItemIcon>
+              <ListItemText primary="User Guide" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </div>
   );
