@@ -231,7 +231,13 @@ const EventList = () => {
                                     <TableCell>{event.eventName}</TableCell>
                                     <TableCell>{new Date(event.eventDate).toLocaleDateString()}</TableCell>
                                     <TableCell>{event.eventType?.name || 'N/A'}</TableCell>
-                                    <TableCell>{event.coordinatorId?.name || 'N/A'}</TableCell>
+                                    {/* <TableCell>{event.coordinatorId?.name || 'N/A'}</TableCell> */}
+                                    <TableCell>
+                                        {event.createdBy?.name || 'Unknown User'} 
+                                        <Typography variant="caption" display="block" color="textSecondary">
+                                            ({event.createdBy?.role?.replace('_', ' ') || 'N/A'})
+                                        </Typography>
+                                    </TableCell>
                                     <TableCell>
                                         {event.eventReport ? (
                                             <Chip label="Uploaded" color="success" size="small" />

@@ -58,12 +58,23 @@ const UserManagement = () => {
   // Pre-populate fields when editing a user
   const handleOpenEditDialog = (targetUser) => {
     let supervisor = '';
-    if (targetUser.role === 'COORDINATOR') supervisor = targetUser.assignedDean?._id || '';
-    if (targetUser.role === 'DEAN') supervisor = targetUser.assignedAdmin?._id || '';
+    
+    if (targetUser.role === 'COORDINATOR') {
+      // Handles both populated object and raw string ID
+      supervisor = targetUser.assignedDean?._id || (typeof targetUser.assignedDean === 'string' ? targetUser.assignedDean : '');
+    }
+    if (targetUser.role === 'DEAN') {
+      // Handles both populated object and raw string ID
+      supervisor = targetUser.assignedAdmin?._id || (typeof targetUser.assignedAdmin === 'string' ? targetUser.assignedAdmin : '');
+    }
 
     setEditForm({
-      id: targetUser._id, name: targetUser.name, email: targetUser.email, 
-      role: targetUser.role, assignedSupervisor: supervisor, password: '' 
+      id: targetUser._id,
+      name: targetUser.name,
+      email: targetUser.email,
+      role: targetUser.role,
+      assignedSupervisor: supervisor,
+      password: ''
     });
     setOpenEdit(true);
   };
@@ -148,9 +159,19 @@ const UserManagement = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    {u.role === 'COORDINATOR' && (u.assignedDean?.name || <Typography variant="caption" color="textSecondary">No Dean Assigned</Typography>)}
-                    {u.role === 'DEAN' && (u.assignedAdmin?.name || <Typography variant="caption" color="textSecondary">No Admin Assigned</Typography>)}
-                    {['SUPER_ADMIN', 'ADMIN'].includes(u.role) && <Typography variant="caption" color="textSecondary">Top Level Authority</Typography>}
+                    {u.role === 'COORDINATOR' && (
+                      u.assignedDean?.name || 
+                      (typeof u.assignedDean === 'string' ? 'Assigned (Refresh Needed)' : <Typography variant="caption" color="textSecondary">No Dean Assigned</Typography>)
+                    )}
+                    
+                    {u.role === 'DEAN' && (
+                      u.assignedAdmin?.name || 
+                      (typeof u.assignedAdmin === 'string' ? 'Assigned (Refresh Needed)' : <Typography variant="caption" color="textSecondary">No Admin Assigned</Typography>)
+                    )}
+                    
+                    {['SUPER_ADMIN', 'ADMIN'].includes(u.role) && (
+                      <Typography variant="caption" color="textSecondary">Top Level Authority</Typography>
+                    )}
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Edit Profile Configs & Access Rules">

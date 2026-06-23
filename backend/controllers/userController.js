@@ -5,10 +5,12 @@ const logAudit = require('../utils/auditLogger');
 // Get all users (Super Admin only)
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: req.user._id } }) // Exclude self
+    const users = await User.find({ _id: { $ne: req.user._id } })
       .populate('assignedDean', 'name')
+      .populate('assignedAdmin', 'name') 
       .select('-password')
       .sort({ createdAt: -1 });
+      
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch users' });

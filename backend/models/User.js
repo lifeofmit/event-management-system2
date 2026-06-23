@@ -9,8 +9,8 @@ const userSchema = new mongoose.Schema({
     enum: ["SUPER_ADMIN", "ADMIN", "DEAN", "COORDINATOR"], 
     required: true 
   },
-  assignedDean: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // For Coordinators
-  assignedAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // For Deans
+  assignedDean: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  assignedAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   status: { type: Boolean, default: true }
 }, { timestamps: true });
 

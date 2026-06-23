@@ -27,7 +27,21 @@ const EventForm = () => {
     API.getActiveEventTypes().then(res => setEventTypes(res.data)).catch(console.error);
   }, []);
 
-  const handleChange = (e) => {
+ const handleChange = (e) => {
+    // ACTIVE DATE VALIDATION
+    if (e.target.name === 'eventDate') {
+      const selectedDate = e.target.value;
+      const today = new Date().toISOString().split('T')[0]; // Gets YYYY-MM-DD
+      
+      if (selectedDate > today) {
+        alert("please select the correct past date.");
+        // Clear the invalid date from the form
+        setFormData({ ...formData, eventDate: '' });
+        return; 
+      }
+    }
+
+    // Standard handler for all other text fields
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -56,6 +70,15 @@ const EventForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // NEW: Strict validation to ensure photos are uploaded
+    if (files.geoLocationPhotos.length === 0) {
+      return alert("Error: Geo Location Photos are required.");
+    }
+    if (files.eventPhotos.length === 0) {
+      return alert("Error: Event Photos are required.");
+    }
+
     const data = new FormData();
     
     // Append Text Data
@@ -76,6 +99,9 @@ const EventForm = () => {
     }
   };
 
+  // Calculate today's date for the max attribute constraint
+  const today = new Date().toISOString().split('T')[0];
+
   return (
     <Paper sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" gutterBottom>Submit New Event</Typography>
@@ -87,7 +113,7 @@ const EventForm = () => {
           {/* <Grid item size={{xs:12, md:4}}>
             <TextField required fullWidth type="date" label="Event Date" name="eventDate" InputLabelProps={{ shrink: true }} onChange={handleChange}  />
           </Grid> */}
-          <Grid item size={{xs:12, md:4}}>
+          <Grid item  size={{xs:12, md:4}}>
             <TextField 
               required 
               fullWidth 
@@ -95,6 +121,7 @@ const EventForm = () => {
               label="Event Date" 
               name="eventDate" 
               InputLabelProps={{ shrink: true }} 
+              inputProps={{ max: today }} // <-- THIS DISABLES FUTURE DATES
               value={formData.eventDate} 
               onChange={handleChange} 
               sx={{
@@ -135,17 +162,22 @@ const EventForm = () => {
           {/* File Uploads */}
           <Grid item size={{xs:12, md:4}}>
             <Button variant="contained" component="label" fullWidth>
-              Geo Photos
+              Geo Photos *
               <input type="file" hidden multiple name="geoLocationPhotos" accept="image/jpeg, image/png" onChange={handleFileChange} />
             </Button>
-            <Typography variant="caption">{files.geoLocationPhotos.length} files selected</Typography>
+            <Typography variant="caption" color={files.geoLocationPhotos.length === 0 ? "error" : "textSecondary"}>
+              {files.geoLocationPhotos.length} files selected (Required)
+            </Typography>
           </Grid>
+          
           <Grid item size={{xs:12, md:4}}>
             <Button variant="contained" component="label" fullWidth>
-              Event Photos
+              Event Photos *
               <input type="file" hidden multiple name="eventPhotos" accept="image/jpeg, image/png" onChange={handleFileChange} />
             </Button>
-            <Typography variant="caption">{files.eventPhotos.length} files selected</Typography>
+            <Typography variant="caption" color={files.eventPhotos.length === 0 ? "error" : "textSecondary"}>
+              {files.eventPhotos.length} files selected (Required)
+            </Typography>
           </Grid>
           <Grid item size={{xs:12, md:4}}>
             <Button variant="contained" color="secondary" component="label" fullWidth>

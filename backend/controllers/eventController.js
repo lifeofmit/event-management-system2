@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const User = require('../models/User');
 const logAudit = require('../utils/auditLogger');
 
 const createEvent = async (req, res) => {
@@ -56,29 +57,63 @@ const getEvents = async (req, res) => {
     const { search, startDate, endDate, eventType } = req.query;
     let filter = {};
 
-    // 1. RBAC Hierarchy Filtering 
-    if (req.user.role === 'COORDINATOR') filter.coordinatorId = req.user._id;
-    if (req.user.role === 'DEAN') filter.deanId = req.user._id;
-    if (req.user.role === 'ADMIN') filter.adminId = req.user._id;
-    // SUPER_ADMIN sees all
+    // =========================================================
+    // DYNAMIC HIERARCHY FILTER ENGINE
+    // =========================================================
+    if (req.user.role === 'COORDINATOR') {
+      filter.coordinatorId = req.user._id;
+    } 
+    else if (req.user.role === 'DEAN') {
+      filter.deanId = req.user._id;
+    } 
+    else if (req.user.role === 'ADMIN') {
+      // 1. Find all Deans managed under this specific Admin
+      const managedDeans = await User.find({ assignedAdmin: req.user._id }).select('_id');
+      const deanIds = managedDeans.map(d => d._id);
 
-    if (search) filter.eventName = { $regex: search, $options: 'i' };
-    if (eventType) filter.eventType = eventType;
+      // 2. Find all Coordinators managed under those specific Deans
+      const managedCoordinators = await User.find({ assignedDean: { $in: deanIds } }).select('_id');
+      const coordinatorIds = managedCoordinators.map(c => c._id);
+
+      // 3. Match events where the admin created it, their deans created it/are tagged, 
+      // or their coordinators created it/are tagged.
+      filter.$or = [
+        { adminId: req.user._id },
+        { createdBy: req.user._id },
+        { deanId: { $in: deanIds } },
+        { coordinatorId: { $in: coordinatorIds } }
+      ];
+    }
+    // SUPER_ADMIN skips filtering completely to view all system data
+
+    // =========================================================
+    // USER SEARCH & COMPONENT FILTERS
+    // =========================================================
+    if (search) {
+      filter.eventName = { $regex: search, $options: 'i' };
+    }
+    if (eventType) {
+      filter.eventType = eventType;
+    }
     if (startDate || endDate) {
       filter.eventDate = {};
       if (startDate) filter.eventDate.$gte = new Date(startDate);
       if (endDate) filter.eventDate.$lte = new Date(endDate);
     }
 
+    // Execute lookup query with population chains
     const events = await Event.find(filter)
       .populate('eventType', 'name')
-      .populate('coordinatorId', 'name')
-      .populate('deanId', 'name')
+      .populate({
+        path: 'createdBy',
+        select: 'name role'
+      })
       .sort({ createdAt: -1 });
 
     res.json(events);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch events' });
+    console.error("Fetch Events Error:", error);
+    res.status(500).json({ message: 'Failed to fetch hierarchical event data' });
   }
 };
 
